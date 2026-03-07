@@ -1,3 +1,21 @@
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import dotenv from "dotenv";
+dotenv.config();
+
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 mdc.ripple.MDCRipple.attachTo(document.querySelector(".mdc-button"));
 
 // DEfault configuration - Change these if you have a different STUN or TURN server.
@@ -27,7 +45,6 @@ function init() {
 async function createRoom() {
   document.querySelector("#createBtn").disabled = true;
   document.querySelector("#joinBtn").disabled = true;
-  const db = firebase.firestore();
   console.log("bd", db);
   const roomRef = await db.collection("rooms").doc();
   console.log("roomRf", roomRef);
@@ -125,7 +142,6 @@ function joinRoom() {
 }
 
 async function joinRoomById(roomId) {
-  const db = firebase.firestore();
   const roomRef = db.collection("rooms").doc(`${roomId}`);
   const roomSnapshot = await roomRef.get();
   console.log("Got room:", roomSnapshot.exists);
@@ -230,7 +246,6 @@ async function hangUp(e) {
 
   // Delete room on hangup
   if (roomId) {
-    const db = firebase.firestore();
     const roomRef = db.collection("rooms").doc(roomId);
     const calleeCandidates = await roomRef.collection("calleeCandidates").get();
     calleeCandidates.forEach(async (candidate) => {
